@@ -58,9 +58,9 @@ def estimator(data):
     avgDailyDollars = impact_data["region"]["avgDailyIncomeInUSD"]
     popEarnAveDollars = impact_data["region"]["avgDailyIncomePopulation"]
     ch3ImpactDollarsInFlight = \
-        int(avgDailyDollars * popEarnAveDollars * ch1ImpactInfectionsByRequestedTime)
+        int((avgDailyDollars * popEarnAveDollars * ch1ImpactInfectionsByRequestedTime)/daysToElapse)
     ch3SevereImpactDollarsInFlight = \
-        int(avgDailyDollars * popEarnAveDollars * ch1ImpactInfectionsByRequestedTime)
+        int((avgDailyDollars * popEarnAveDollars * ch1SevereImpactInfectionsByRequestedTime)/daysToElapse)
     
     #Output 
     output = {
@@ -81,7 +81,7 @@ def estimator(data):
                     "hospitalBedsByRequestedTime" : ch2SevereImpactOpenHospitalBeds,
                     "casesForICUByRequestedTime"  : ch3SevereImpactICUCasesByInfectedTime,
                     "casesForVentilatorsByRequestedTime" : ch3SevereImpactVentilatorCasesByInfectedTime,
-                    "dollarsInFlight": ch3ImpactDollarsInFlight
+                    "dollarsInFlight": ch3SevereImpactDollarsInFlight
                     }
             }
     return output
@@ -103,3 +103,4 @@ def convert_period_to_days(periodType,timeToElapse):
         dayConvertor=30
     timeInDays = timeToElapse * dayConvertor    
     return timeInDays
+    
