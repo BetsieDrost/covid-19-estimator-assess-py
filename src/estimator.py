@@ -31,10 +31,10 @@ def estimator(data):
         int(ch1ImpactInfectionsByRequestedTime * casesRequiringHospitalisation)
         
     ch2SevereImpactSevereCasesByRequestedTime = \
-        (ch1SevereImpactInfectionsByRequestedTime * casesRequiringHospitalisation )
+        int(ch1SevereImpactInfectionsByRequestedTime * casesRequiringHospitalisation )
         
     ch2BedsAvailableforCovid19 = \
-       allHospitalBeds * hospitalBedCapacityAvailable
+       int(allHospitalBeds * hospitalBedCapacityAvailable)
         
     ch2ImpactOpenHospitalBeds = \
         ch2BedsAvailableforCovid19 - ch2ImpactSevereCasesByRequestedTime
@@ -45,13 +45,13 @@ def estimator(data):
     # Challenge 3 - Part 1:  Determine cases requiring ventilators and cases requiring ICU
     
     ch3ImpactICUCasesByInfectedTime = \
-        (ch1ImpactInfectionsByRequestedTime * casesRequiringICU)
+        int(ch1ImpactInfectionsByRequestedTime * casesRequiringICU)
     ch3SevereImpactICUCasesByInfectedTime = \
-        (ch1SevereImpactInfectionsByRequestedTime * casesRequiringICU)
+        int(ch1SevereImpactInfectionsByRequestedTime * casesRequiringICU)
     ch3ImpactVentilatorCasesByInfectedTime = \
-        (ch1ImpactInfectionsByRequestedTime * casesRequiringVentilators)
+        int(ch1ImpactInfectionsByRequestedTime * casesRequiringVentilators)
     ch3SevereImpactVentilatorCasesByInfectedTime = \
-        (ch1SevereImpactInfectionsByRequestedTime * casesRequiringVentilators)
+        int(ch1SevereImpactInfectionsByRequestedTime * casesRequiringVentilators)
     
     #  Challenge 3 - Part 2 : Determine the DollarsInFlight
     
@@ -103,4 +103,3 @@ def convert_period_to_days(periodType,timeToElapse):
         dayConvertor=30
     timeInDays = timeToElapse * dayConvertor    
     return timeInDays
-
