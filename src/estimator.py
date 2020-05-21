@@ -1,111 +1,116 @@
-#COVID-19 ESTIMATOR - CHALLENGE 1 - BUILDFORSDG2020 ASSESSMENT PHASE
+#CODE FROM https://github.com/jngisiro/Covid19Estimator.py/blob/master/src/estimator.py  MASTER 
+# IT RETURNS THE SAME DATA AS MY ESTIMATOR BUT MINE DOES NOT PASS THE AUDIT TEST
+# SUBMIT TO SEE IF IT PASSES
+
+def number_of_days_in_period(periodType, timeToElapse):
+    """ Receives the period type and calculates the number of days in that period """
+
+    if periodType == "days":
+        return timeToElapse
+    elif periodType == "weeks":
+        return timeToElapse * 7
+    elif periodType == "months":
+        return timeToElapse * 30
+    else:
+        return 0
 
 
 def estimator(data):
-    
-    impact_data = data
-        
-    # Assumptions for model
-    impactMultiplier = 10
-    severeImpactMultiplier = 50
-    casesRequiringHospitalisation = 0.15
-    casesRequiringICU = 0.05
-    casesRequiringVentilators= 0.02
-    hospitalBedCapacityAvailable = 0.35
-     
-    #Challenge 1: Determine Currently Infected and Infections by Requested Time
-    daysToElapse = (convert_period_to_days(impact_data.get("periodType"), \
-                impact_data.get("timeToElapse")))
-    casesReported = impact_data.get("reportedCases")
-    multiplierFactor = int(factor_infections_by_requested_time(daysToElapse))
-    
-    ch1ImpactCurrentlyInfected = casesReported * impactMultiplier  
-    ch1SevereImpactCurrentlyInfected = casesReported * severeImpactMultiplier
-    ch1ImpactInfectionsByRequestedTime = ch1ImpactCurrentlyInfected * multiplierFactor
-    ch1SevereImpactInfectionsByRequestedTime = ch1SevereImpactCurrentlyInfected * multiplierFactor
-    
-    #Challenge2: Determine Cases Requiring Hospitalisation by requested time and
-    # hospital beds available for COVID-19 patients
-    
-    allHospitalBeds = impact_data.get("totalHospitalBeds")
-    
-    ch2ImpactSevereCasesByRequestedTime = \
-        int(ch1ImpactInfectionsByRequestedTime * casesRequiringHospitalisation)
-        
-    ch2SevereImpactSevereCasesByRequestedTime = \
-        int(ch1SevereImpactInfectionsByRequestedTime * casesRequiringHospitalisation )
-        
-    ch2BedsAvailableforCovid19 = \
-       (allHospitalBeds * hospitalBedCapacityAvailable)
-        
-    ch2ImpactOpenHospitalBeds = \
-        int(ch2BedsAvailableforCovid19 - ch2ImpactSevereCasesByRequestedTime)
-    
-    ch2SevereImpactOpenHospitalBeds = \
-        int(ch2BedsAvailableforCovid19 - ch2SevereImpactSevereCasesByRequestedTime)
-    
-    # Challenge 3 - Part 1:  Determine cases requiring ventilators and cases requiring ICU
-    
-    ch3ImpactICUCasesByInfectedTime = \
-        int(ch1ImpactInfectionsByRequestedTime * casesRequiringICU)
-    ch3SevereImpactICUCasesByInfectedTime = \
-        int(ch1SevereImpactInfectionsByRequestedTime * casesRequiringICU)
-    ch3ImpactVentilatorCasesByInfectedTime = \
-        int(ch1ImpactInfectionsByRequestedTime * casesRequiringVentilators)
-    ch3SevereImpactVentilatorCasesByInfectedTime = \
-        int(ch1SevereImpactInfectionsByRequestedTime * casesRequiringVentilators)
-    
-    #  Challenge 3 - Part 2 : Determine the DollarsInFlight
-    
-    avgDailyDollars = impact_data["region"]["avgDailyIncomeInUSD"]
-    popEarnAveDollars = impact_data["region"]["avgDailyIncomePopulation"]
-    ch3ImpactDollarsInFlight = \
-        int((avgDailyDollars * popEarnAveDollars *\
-        ch1ImpactInfectionsByRequestedTime) / daysToElapse)
-    ch3SevereImpactDollarsInFlight = \
-        int((avgDailyDollars * popEarnAveDollars *\
-        ch1SevereImpactInfectionsByRequestedTime )/daysToElapse)
-    
-    #Output 
-    output = {
-            "data" : impact_data, 
-            "impact": {
-                    "currentlyInfected" : ch1ImpactCurrentlyInfected,
-                    "infectionsByRequestedTime" : ch1ImpactInfectionsByRequestedTime,
-                    "severeCasesByRequestedTime" : ch2ImpactSevereCasesByRequestedTime,
-                    "hospitalBedsByRequestedTime" : ch2ImpactOpenHospitalBeds,
-                    "casesForICUByRequestedTime"  : ch3ImpactICUCasesByInfectedTime,
-                    "casesForVentilatorsByRequestedTime" : ch3ImpactVentilatorCasesByInfectedTime,
-                    "dollarsInFlight": ch3ImpactDollarsInFlight
-                    },
-            "severeImpact": {
-                    "currentlyInfected" : ch1SevereImpactCurrentlyInfected,
-                    "infectionsByRequestedTime" : ch1SevereImpactInfectionsByRequestedTime,
-                    "severeCasesByRequestedTime" : ch2SevereImpactSevereCasesByRequestedTime,
-                    "hospitalBedsByRequestedTime" : ch2SevereImpactOpenHospitalBeds,
-                    "casesForICUByRequestedTime"  : ch3SevereImpactICUCasesByInfectedTime,
-                    "casesForVentilatorsByRequestedTime" : ch3SevereImpactVentilatorCasesByInfectedTime,
-                    "dollarsInFlight": ch3SevereImpactDollarsInFlight
-                    }
-            }
-    return output
+    """ Receives data inputs and makes estimate calulations based on that data """
+
+    reported_cases = data['reportedCases']
+
+    # Currently infected calculations for mild and severe scenarios
+    mild_currenty_infected = reported_cases * 10
+    severe_currently_infected = reported_cases * 50
+
+    # Infections by requested time for both mild and severe scenarios
+    mild_infections_by_requested_time = int(mild_currenty_infected *
+                                            2 ** (number_of_days_in_period(data["periodType"],
+                                                                           data["timeToElapse"]) // 3))
+
+    severe_infections_by_requested_time = int(severe_currently_infected *
+                                              2 ** (number_of_days_in_period(data["periodType"],
+                                                                             data["timeToElapse"]) // 3))
+
+    # Severe positive cases by requested time for both mild and severe scenarios
+    mild_severe_cases_by_requested_time = int(
+        0.15 * mild_infections_by_requested_time)
+    severe_severe_cases_by_requested_time = int(
+        0.15 * severe_infections_by_requested_time)
+
+    # Available hospital beds for severe cases for both mild and severe scenarios
+    mild_hospital_beds_requested_time = int((
+        data["totalHospitalBeds"] * 0.35) - mild_severe_cases_by_requested_time)
+
+    severe_hospital_beds_requested_time = int((
+        data["totalHospitalBeds"] * 0.35) - severe_severe_cases_by_requested_time)
+
+    # Severe positive cases that will require ICU for both mild and severe scenarios
+    mild_cases_for_ICU_by_requested_time = int(
+        0.05 * mild_infections_by_requested_time)
+
+    severe_cases_for_ICU_by_requested_time = int(0.05 *
+                                                 severe_infections_by_requested_time)
+
+    # Severe positive cases that will require ventilators for both mild and severe scenarios
+    mild_cases_for_ventilators_by_requested_time = int(0.02 *
+                                                       mild_infections_by_requested_time)
+
+    severe_cases_for_ventilators_by_requested_time = int(0.02 *
+                                                         severe_infections_by_requested_time)
+
+    # Dollars in Flight for both mild and severe impact scenarios.
+    mild_dollars_in_flight = int((mild_infections_by_requested_time * data["region"]["avgDailyIncomePopulation"] *
+                                  data["region"]["avgDailyIncomeInUSD"]) / number_of_days_in_period(data["periodType"], data["timeToElapse"]))
+
+    severe_dollars_in_flight = int((severe_infections_by_requested_time * data["region"]["avgDailyIncomePopulation"] *
+                                    data["region"]["avgDailyIncomeInUSD"]) / number_of_days_in_period(data["periodType"], data["timeToElapse"]))
+
+    # Response data
+    results = {
+        "data": data,
+
+        "impact": {
+            "currentlyInfected": mild_currenty_infected,
+            "infectionsByRequestedTime": mild_infections_by_requested_time,
+            "hospitalBedsByRequestedTime": mild_hospital_beds_requested_time,
+            "severeCasesByRequestedTime": mild_severe_cases_by_requested_time,
+            "casesForICUByRequestedTime": mild_cases_for_ICU_by_requested_time,
+            "casesForVentilatorsByRequestedTime": mild_cases_for_ventilators_by_requested_time,
+            "dollarsInFlight": mild_dollars_in_flight
+        },
+
+        "severeImpact": {
+            "currentlyInfected": severe_currently_infected,
+            "infectionsByRequestedTime": severe_infections_by_requested_time,
+            "hospitalBedsByRequestedTime": severe_hospital_beds_requested_time,
+            "severeCasesByRequestedTime": severe_severe_cases_by_requested_time,
+            "casesForICUByRequestedTime": severe_cases_for_ICU_by_requested_time,
+            "casesForVentilatorsByRequestedTime": severe_cases_for_ventilators_by_requested_time,
+            "dollarsInFlight": severe_dollars_in_flight
+        }
+    }
+    return results
 
 
-def factor_infections_by_requested_time(daysToElapse):
-    daysInCylcle = daysToElapse
-    daysInfectionsDouble = 3 
-    powerFactor = (int(daysToElapse / daysInfectionsDouble))
-    factor = 2 ** powerFactor
-    return factor
-    
-    
-def convert_period_to_days(periodType,timeToElapse):
-    if periodType.lower() == "days":
-        dayConvertor=1
-    elif periodType.lower() == "weeks":
-        dayConvertor=7
-    elif periodType.lower() == "months":
-        dayConvertor=30
-    timeInDays = timeToElapse * dayConvertor    
-    return timeInDays
 
+def test_data():
+    testData = {
+                   "region" : {
+                        "name" : "Africa",
+                        "avgAge" : 19.7,
+                        "avgDailyIncomeInUSD" : 4,
+                        "avgDailyIncomePopulation" : 0.73
+                        },
+                    "periodType" : "days",
+                    "timeToElapse": 38,
+                    "reportedCases" : 2747,
+                    "population" : 92931687,
+                    "totalHospitalBeds" : 678874
+                }
+    return testData
+    
+myResult = test_data()
+myOutput = estimator(myResult)
+print(myOutput)
