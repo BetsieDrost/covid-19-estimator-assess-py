@@ -37,6 +37,7 @@ def estimator(data):
             }
     return output
 
+
 def factor_infections_by_requested_time(daysToElapse):
     daysInCylcle = daysToElapse
     daysInfectionsDouble = 3 
