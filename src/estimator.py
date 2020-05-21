@@ -22,68 +22,17 @@ def estimator(data):
     ch1ImpactInfectionsByRequestedTime = ch1ImpactCurrentlyInfected * multiplierFactor
     ch1SevereImpactInfectionsByRequestedTime = ch1SevereImpactCurrentlyInfected * multiplierFactor
     
-    #Challenge2: Determine Cases Requiring Hospitalisation by requested time and
-    # hospital beds available for COVID-19 patients
-    
-    allHospitalBeds = impact_data.get("totalHospitalBeds")
-    
-    ch2ImpactSevereCasesByRequestedTime = \
-        int(ch1ImpactInfectionsByRequestedTime * casesRequiringHospitalisation)
-        
-    ch2SevereImpactSevereCasesByRequestedTime = \
-        int(ch1SevereImpactInfectionsByRequestedTime * casesRequiringHospitalisation )
-        
-    ch2BedsAvailableforCovid19 = \
-       (allHospitalBeds * hospitalBedCapacityAvailable)
-        
-    ch2ImpactOpenHospitalBeds = \
-        int(ch2BedsAvailableforCovid19 - ch2ImpactSevereCasesByRequestedTime)
-    
-    ch2SevereImpactOpenHospitalBeds = \
-        int(ch2BedsAvailableforCovid19 - ch2SevereImpactSevereCasesByRequestedTime)
-    
-    # Challenge 3 - Part 1:  Determine cases requiring ventilators and cases requiring ICU
-    
-    ch3ImpactICUCasesByInfectedTime = \
-        int(ch1ImpactInfectionsByRequestedTime * casesRequiringICU)
-    ch3SevereImpactICUCasesByInfectedTime = \
-        int(ch1SevereImpactInfectionsByRequestedTime * casesRequiringICU)
-    ch3ImpactVentilatorCasesByInfectedTime = \
-        int(ch1ImpactInfectionsByRequestedTime * casesRequiringVentilators)
-    ch3SevereImpactVentilatorCasesByInfectedTime = \
-        int(ch1SevereImpactInfectionsByRequestedTime * casesRequiringVentilators)
-    
-    #  Challenge 3 - Part 2 : Determine the DollarsInFlight
-    
-    avgDailyDollars = impact_data["region"]["avgDailyIncomeInUSD"]
-    popEarnAveDollars = impact_data["region"]["avgDailyIncomePopulation"]
-    ch3ImpactDollarsInFlight = \
-        int(avgDailyDollars * popEarnAveDollars *\
-        ch1ImpactInfectionsByRequestedTime * daysToElapse)
-    ch3SevereImpactDollarsInFlight = \
-        int(avgDailyDollars * popEarnAveDollars *\
-        ch1SevereImpactInfectionsByRequestedTime * daysToElapse)
     
     #Output 
     output = {
             "data" : impact_data, 
             "impact": {
                     "currentlyInfected" : ch1ImpactCurrentlyInfected,
-                    "infectionsByRequestedTime" : ch1ImpactInfectionsByRequestedTime,
-                    "severeCasesByRequestedTime" : ch2ImpactSevereCasesByRequestedTime,
-                    "hospitalBedsByRequestedTime" : ch2ImpactOpenHospitalBeds,
-                    "casesForICUByRequestedTime"  : ch3ImpactICUCasesByInfectedTime,
-                    "casesForVentilatorsByRequestedTime" : ch3ImpactVentilatorCasesByInfectedTime,
-                    "dollarsInFlight": ch3ImpactDollarsInFlight
+                    "infectionsByRequestedTime" : ch1ImpactInfectionsByRequestedTime
                     },
             "severeImpact": {
                     "currentlyInfected" : ch1SevereImpactCurrentlyInfected,
-                    "infectionsByRequestedTime" : ch1SevereImpactInfectionsByRequestedTime,
-                    "severeCasesByRequestedTime" : ch2SevereImpactSevereCasesByRequestedTime,
-                    "hospitalBedsByRequestedTime" : ch2SevereImpactOpenHospitalBeds,
-                    "casesForICUByRequestedTime"  : ch3SevereImpactICUCasesByInfectedTime,
-                    "casesForVentilatorsByRequestedTime" : ch3SevereImpactVentilatorCasesByInfectedTime,
-                    "dollarsInFlight": ch3SevereImpactDollarsInFlight
+                    "infectionsByRequestedTime" : ch1SevereImpactInfectionsByRequestedTime
                     }
             }
     return output
