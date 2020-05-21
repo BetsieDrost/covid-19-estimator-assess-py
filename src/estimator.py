@@ -58,9 +58,11 @@ def estimator(data):
     avgDailyDollars = impact_data["region"]["avgDailyIncomeInUSD"]
     popEarnAveDollars = impact_data["region"]["avgDailyIncomePopulation"]
     ch3ImpactDollarsInFlight = \
-        int((avgDailyDollars * popEarnAveDollars * ch1ImpactInfectionsByRequestedTime)/daysToElapse)
+        int(avgDailyDollars * popEarnAveDollars *\
+        ch1ImpactInfectionsByRequestedTime * daysToElapse)
     ch3SevereImpactDollarsInFlight = \
-        int((avgDailyDollars * popEarnAveDollars * ch1SevereImpactInfectionsByRequestedTime)/daysToElapse)
+        int(avgDailyDollars * popEarnAveDollars *\
+        ch1SevereImpactInfectionsByRequestedTime * daysToElapse)
     
     #Output 
     output = {
