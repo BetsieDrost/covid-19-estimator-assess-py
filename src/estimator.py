@@ -34,13 +34,13 @@ def estimator(data):
         int(ch1SevereImpactInfectionsByRequestedTime * casesRequiringHospitalisation )
         
     ch2BedsAvailableforCovid19 = \
-       int(allHospitalBeds * hospitalBedCapacityAvailable)
+       (allHospitalBeds * hospitalBedCapacityAvailable)
         
     ch2ImpactOpenHospitalBeds = \
-        ch2BedsAvailableforCovid19 - ch2ImpactSevereCasesByRequestedTime
+        int(ch2BedsAvailableforCovid19 - ch2ImpactSevereCasesByRequestedTime)
     
     ch2SevereImpactOpenHospitalBeds = \
-        (ch2BedsAvailableforCovid19 - ch2SevereImpactSevereCasesByRequestedTime)
+        int(ch2BedsAvailableforCovid19 - ch2SevereImpactSevereCasesByRequestedTime)
     
     # Challenge 3 - Part 1:  Determine cases requiring ventilators and cases requiring ICU
     
@@ -103,4 +103,4 @@ def convert_period_to_days(periodType,timeToElapse):
         dayConvertor=30
     timeInDays = timeToElapse * dayConvertor    
     return timeInDays
-    
+
